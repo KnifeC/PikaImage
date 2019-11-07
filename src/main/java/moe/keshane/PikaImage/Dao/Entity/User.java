@@ -12,9 +12,11 @@ public class User {
     @GeneratedValue(generator = "jpa-uuid")
     @Column(length = 32)
     private String userId;
-    @Column(nullable = false,length=64,unique = true)
-    private String email;
+//    @Column(nullable = false,length=64,unique = true)
+//    private String email;
+    @Column(nullable = false)
     private String username;
+    @Column(nullable = false)
     private String password;
     private String type = "user";
 
@@ -34,13 +36,13 @@ public class User {
         this.userId = userId;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+//    public String getEmail() {
+//        return email;
+//    }
+//
+//    public void setEmail(String email) {
+//        this.email = email;
+//    }
 
     public String getUsername() {
         return username;
@@ -62,7 +64,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "userId='" + userId + '\'' +
-                ", email='" + email + '\'' +
+//                ", email='" + email + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", type='" + type + '\'' +
