@@ -16,6 +16,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         String jarPath = FileUtils.getJarPath();
-        registry.addResourceHandler("/image/**").addResourceLocations("file:"+jarPath);
+        registry.addResourceHandler("/image/**").addResourceLocations("file:./image/");
     }
 }

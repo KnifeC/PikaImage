@@ -2,8 +2,10 @@ package moe.keshane.PikaImage.Util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.system.ApplicationHome;
+import org.springframework.util.ResourceUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 @Slf4j
 public class FileUtils {
@@ -13,11 +15,11 @@ public class FileUtils {
         this.userPath = userUuid;
     }
 
-    public static String getJarPath(){
+    public static String getJarPath() {
         ApplicationHome home = new ApplicationHome(FileUtils.class);
-        File jarF = home.getSource();
-        log.info(jarF.getParentFile().toString());
-        return jarF.getParentFile().toString();
+        File jarPath = home.getDir();
+        log.info(jarPath.toString());
+        return jarPath.toString();
     }
 
 }
