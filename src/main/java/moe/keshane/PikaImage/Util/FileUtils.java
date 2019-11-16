@@ -18,7 +18,7 @@ public class FileUtils {
     public static String getJarPath() {
         ApplicationHome home = new ApplicationHome(FileUtils.class);
         File jarPath = home.getDir();
-        log.info(jarPath.toString());
+        log.info("Jar file root path : {}",jarPath.toString());
         return jarPath.toString();
     }
 

@@ -34,3 +34,5 @@ build/
 /DB
 /DB/**
 /mavensetting.xml
+/log.txt
+/log/**
