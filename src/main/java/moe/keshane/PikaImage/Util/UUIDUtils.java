@@ -1,4 +1,4 @@
-package moe.keshane.PikaImage.Utils;
+package moe.keshane.PikaImage.Util;
 
 import java.util.UUID;
 
