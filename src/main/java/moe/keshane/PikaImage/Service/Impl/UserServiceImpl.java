@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
     public User login(String username, String password) {
         String encodePassword = DigestUtils.sha256Hex(password);
         try{
-            User user = userRepo.getUserByUserNameandAndPassword(username, encodePassword);
+            User user = userRepo.getUserByUsernameAndPassword(username, encodePassword);
             if(user == null){
                 throw new UserNotFoundException("用户名或密码错误");
             }
@@ -55,4 +55,9 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public User getUserById(String userId) {
+        User user = userRepo.findUserByUserId(userId);
+        return user;
+    }
 }

@@ -13,15 +13,16 @@ public class CookieUtils {
         return cookie;
     }
 
-    public static Cookie setUserIdCookie(String userId){
+    public static boolean setUserIdCookie(HttpServletResponse response,String userId){
         Cookie cookie = setDefaultCookie(KeySet.UUID, userId);
         cookie.setMaxAge(7*24*60*60);
         cookie.setPath("/");
-        return cookie;
+        return addCookieResponse(response,cookie);
     }
 
-    public static void addCookieResponse(HttpServletResponse response,Cookie cookie){
+    public static boolean addCookieResponse(HttpServletResponse response,Cookie cookie){
         response.addCookie(cookie);
+        return true;
     }
 
     public static String getRequestCookie(HttpServletRequest request,String cookieKey){
@@ -35,4 +36,17 @@ public class CookieUtils {
         }
         return  null;
     }
+    public static boolean deleteCookie(HttpServletResponse response,String cookieKey,String path){
+        Cookie cookie = new Cookie(cookieKey, null);
+        cookie.setMaxAge(0);
+        cookie.setPath(path);
+        response.addCookie(cookie);
+        return true;
+    }
+
+    public static boolean deleteUserIdcookie(HttpServletResponse response){
+        boolean b = deleteCookie(response, KeySet.UUID, "/");
+        return b;
+    }
+
 }

@@ -40,7 +40,7 @@ public class UserController {
             throw new DatabaseException("注册失败，用户名重复");
         }
     }
-    @RequestMapping(value = "register",method = RequestMethod.POST)
+    @RequestMapping(value = "login",method = RequestMethod.POST)
     @ResponseBody
     public String login(UserForm userForm, HttpServletResponse response){
         String username;
@@ -49,7 +49,7 @@ public class UserController {
             username = userForm.getPassword();
             password = userForm.getRepassword();
             User user = userService.login(username, password);
-            CookieUtils.setUserIdCookie(user.getUserId());
+            CookieUtils.setUserIdCookie(response,user.getUserId());
             return user.toString();
         }catch(DataInputException die){
             throw  new DataInputException(die.getMessage());

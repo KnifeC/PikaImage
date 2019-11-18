@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface UserRepo extends JpaRepository<User,String> {
     User findUserByUsername(String userName);
     User findUserByUserId(String userId);
-    User getUserByUserNameandAndPassword(String userName,String password);
+    User getUserByUsernameAndPassword(String userName,String password);
     long countAllByTypeEquals(String type);
 }
