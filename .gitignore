@@ -36,3 +36,5 @@ build/
 /mavensetting.xml
 /log.txt
 /log/**
+/image
+/image/**
