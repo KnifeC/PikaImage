@@ -42,12 +42,8 @@ public class UserController {
     }
     @RequestMapping(value = "login",method = RequestMethod.POST)
     @ResponseBody
-    public String login(UserForm userForm, HttpServletResponse response){
-        String username;
-        String password;
+    public String login(String username,String password, HttpServletResponse response){
         try{
-            username = userForm.getPassword();
-            password = userForm.getRepassword();
             User user = userService.login(username, password);
             CookieUtils.setUserIdCookie(response,user.getUserId());
             return user.toString();
