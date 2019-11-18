@@ -2,6 +2,8 @@ package moe.keshane.PikaImage.Controller;
 
 import lombok.extern.slf4j.Slf4j;
 import moe.keshane.PikaImage.Dao.Entity.User;
+import moe.keshane.PikaImage.Exception.DataInputException;
+import moe.keshane.PikaImage.Exception.DatabaseException;
 import moe.keshane.PikaImage.Form.UserForm;
 import moe.keshane.PikaImage.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +20,24 @@ public class UserController {
     @RequestMapping(value = "register",method = RequestMethod.POST)
     @ResponseBody
     public String register(UserForm userForm){
-        User register = userService.register(userForm.getUsername(), userForm.getPassword(), userForm.getRepassword());
-        return register.toString();
+        String username;
+        String password;
+        String rePassword;
+        try{
+            username = userForm.getPassword();
+            password = userForm.getRepassword();
+            rePassword = userForm.getUsername();
+            User register = userService.register(userForm.getUsername(), userForm.getPassword(), userForm.getRepassword());
+            return register.toString();
+        }catch(DataInputException die){
+            throw  new DataInputException(die.getMessage());
+        }catch(NullPointerException e){
+            throw new DataInputException("输入数据不能为空");
+        }catch (DatabaseException de){
+            throw new DatabaseException("注册失败，用户名重复");
+        }
+
+
     }
 
 }

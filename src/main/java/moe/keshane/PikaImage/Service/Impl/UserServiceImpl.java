@@ -22,6 +22,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(String username, String password, String rePassword) {
+
         if(!password.equals(rePassword)){
             throw new DataInputException("两次输入的密码不一致");
         }
