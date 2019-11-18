@@ -22,7 +22,7 @@ public class LoginIntercepter implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String userId = CookieUtils.getRequestCookie(request, KeySet.UUID);
-        if(userId==null) {
+        if(userId==null||userId.equals("")) {
             request.setAttribute(KeySet.MESSAGE,"该操作需要登陆");
             response.sendRedirect("/login");
             return false;

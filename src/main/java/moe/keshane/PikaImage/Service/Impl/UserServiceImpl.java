@@ -1,5 +1,6 @@
 package moe.keshane.PikaImage.Service.Impl;
 
+import lombok.extern.slf4j.Slf4j;
 import moe.keshane.PikaImage.Dao.Entity.User;
 import moe.keshane.PikaImage.Dao.Repo.UserRepo;
 import moe.keshane.PikaImage.Exception.DataInputException;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -35,8 +37,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(@NonNull String username, @NonNull String password,@NonNull String rePassword) {
+    public User register(String username, String password,String rePassword) {
         if(!password.equals(rePassword)){
+//            log.error("{}两次输入密码{}不一致{}",username,password,rePassword);
             throw new DataInputException("两次输入的密码不一致");
         }
         User user = new User();
