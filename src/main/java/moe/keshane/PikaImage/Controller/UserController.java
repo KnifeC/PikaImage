@@ -8,6 +8,7 @@ import moe.keshane.PikaImage.Exception.DatabaseException;
 import moe.keshane.PikaImage.Exception.UserNotFoundException;
 import moe.keshane.PikaImage.Service.UserService;
 import moe.keshane.PikaImage.Util.CookieUtils;
+import moe.keshane.PikaImage.Util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class UserController {
     @ResponseBody
     public String register(String username, String password, String rePassword) {
         try {
-            if (username == null || password == null || rePassword == null || username.equals("") || password.equals("") || rePassword.equals("")) {
+            if (StringUtils.nullCheck(username,password,rePassword)) {
                 throw new DataInputException("输入数据不能为空");
             }
             User register = userService.register(username, password, rePassword);
@@ -41,7 +42,7 @@ public class UserController {
     @ResponseBody
     public String login(String username, String password, HttpServletResponse response) {
         try {
-            if (username == null || password == null || username.equals("") || password.equals("")) {
+            if (StringUtils.nullCheck(username,password)) {
                 throw new DataInputException("输入数据不能为空");
             }
             User user = userService.login(username, password);
