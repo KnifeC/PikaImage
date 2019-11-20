@@ -22,39 +22,29 @@ public class UserServiceImpl implements UserService {
     @Override
     public User login(String username, String password) {
         String encodePassword = DigestUtils.sha256Hex(password);
-        try{
-            User user = userRepo.getUserByUsernameAndPassword(username, encodePassword);
-            if(user == null){
-                throw new UserNotFoundException("用户名或密码错误");
-            }
-//            user.setPassword("");
-            return user;
-        }catch(Exception e){
-            e.printStackTrace();
-            throw new DatabaseException("数据库异常",e);
+        User user = userRepo.getUserByUsernameAndPassword(username, encodePassword);
+        if (user == null) {
+            throw new UserNotFoundException("用户名或密码错误");
         }
-
+        return user;
     }
 
+
     @Override
-    public User register(String username, String password,String rePassword) {
-        if(!password.equals(rePassword)){
-//            log.error("{}两次输入密码{}不一致{}",username,password,rePassword);
-            throw new DataInputException("两次输入的密码不一致");
-        }
+    public User register(String username, String password, String rePassword) {
         User user = new User();
         user.setUsername(username);
         String encodePassword = DigestUtils.sha256Hex(password);
         user.setPassword(encodePassword);
-        if(userRepo.countAllByTypeEquals("admin")==0){
+        if (userRepo.countAllByTypeEquals("admin") == 0) {
             user.setType("admin");
         }
         try {
             User save = userRepo.save(user);
             return save;
-        }catch (Exception se){
+        } catch (Exception se) {
             se.printStackTrace();
-            throw new DatabaseException("数据库异常",se);
+            throw new DatabaseException("数据库异常", se);
         }
     }
 

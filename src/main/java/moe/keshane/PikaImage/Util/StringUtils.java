@@ -1,12 +1,12 @@
 package moe.keshane.PikaImage.Util;
 
 public class StringUtils {
-    public static boolean nullCheck(String... strings){
+    public static boolean isNull(String... strings){
         for(String s:strings){
             if(s==null||s.equals("")){
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 }
