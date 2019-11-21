@@ -1,4 +1,4 @@
-package moe.keshane.PikaImage.Controller;
+package moe.keshane.PikaImage.Web.Controller;
 
 import lombok.extern.slf4j.Slf4j;
 import moe.keshane.PikaImage.Common.KeySet;

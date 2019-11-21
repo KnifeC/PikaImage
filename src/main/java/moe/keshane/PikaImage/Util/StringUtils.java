@@ -9,4 +9,12 @@ public class StringUtils {
         }
         return false;
     }
+    public static boolean isHasAny(String source,String... checkArgs){
+        for(String s : checkArgs){
+            if(source.indexOf(s)!=-1){
+                return true;
+            }
+        }
+        return false;
+    }
 }

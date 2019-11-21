@@ -1,7 +1,6 @@
-package moe.keshane.PikaImage.Controller;
+package moe.keshane.PikaImage.Web.Controller;
 
 
-import com.sun.media.sound.ModelPatch;
 import moe.keshane.PikaImage.Common.KeySet;
 import moe.keshane.PikaImage.Dao.Entity.User;
 import moe.keshane.PikaImage.Service.UserService;

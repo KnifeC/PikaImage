@@ -32,13 +32,16 @@ public class FileUtils {
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
-
             }
         }
         return false;
     }
 
-    public static String getUriPath(String userName,String uri){
+    public static String getPathByUri(String uri){
+        return Paths.get(getJarPath().toString(), FileKey.FILEROOT,FileKey.IMAGESTORAGE,uri).toString();
+    }
+
+    public static String getPathByUserNameAndUri(String userName,String uri){
         String userRootPath = getUserRootPath(userName);
         Path path = Paths.get(userRootPath,uri);
         return path.toString();
