@@ -3,6 +3,7 @@ package moe.keshane.PikaImage.Config;
 import moe.keshane.PikaImage.Common.KeySet;
 import moe.keshane.PikaImage.Dao.Entity.User;
 import moe.keshane.PikaImage.Service.UserService;
+import moe.keshane.PikaImage.Util.SessionUtils;
 import moe.keshane.PikaImage.Util.StringUtils;
 import moe.keshane.PikaImage.Util.UserCookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ public class LoginIntercepter implements HandlerInterceptor {
             return false;
         }
         request.setAttribute(KeySet.USERNAME,user.getUsername());
+        SessionUtils.setSessionData(request.getSession(),KeySet.USERNAME,user.getUsername());
         return true;
     }
 
