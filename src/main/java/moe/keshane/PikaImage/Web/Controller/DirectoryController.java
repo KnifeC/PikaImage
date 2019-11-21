@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Slf4j
@@ -21,11 +24,17 @@ import java.util.List;
 public class DirectoryController {
     @RequestMapping("/list")
     public String listRoot(HttpServletRequest request, HttpSession session, ModelMap modelMap) {
-        request.getRequestURI();
+        String uri = null;
+        try {
+            uri = URLDecoder.decode(request.getRequestURI(),"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         String username = SessionUtils.getUserNameFromSession(session);
         String userRootPath = FileUtils.getUserRootPath(username);
         List<String> dirList = FileUtils.listDir(userRootPath);
         List<String> fileList = FileUtils.listFile(userRootPath);
+        modelMap.put(FileKey.NOWPATH,uri);
         modelMap.put(KeySet.USERNAME, username);
         modelMap.put(FileKey.DIRECTORIES, dirList);
         modelMap.put(FileKey.FILES, fileList);
@@ -34,10 +43,17 @@ public class DirectoryController {
 
     @RequestMapping("/list/**")
     public String list(HttpServletRequest request, HttpSession session, ModelMap modelMap) {
-        String uri = request.getRequestURI();
+        String uri = null;
+        try {
+            uri = URLDecoder.decode(request.getRequestURI(),"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         String uriP = uri.substring(uri.indexOf("list") + 4, uri.length());
+        log.info("访问的路径去除list为: {}",uriP);
         String username = SessionUtils.getUserNameFromSession(session);
         String uriPath = FileUtils.getPathByUserNameAndUri(username, uriP);
+        log.info("组装好之后的文件路径为: {}",uriPath);
         if (!FileUtils.isExist(uriPath)) {
 //            FileUtils.createDirFromPath(uriPath);
             modelMap.put(KeySet.USERNAME, username);
@@ -48,6 +64,7 @@ public class DirectoryController {
         List<String> dirList = FileUtils.listDir(uriPath);
         List<String> fileList = FileUtils.listFile(uriPath);
         modelMap.put(KeySet.USERNAME, username);
+        modelMap.put(FileKey.NOWPATH,uri);
         modelMap.put(FileKey.DIRECTORIES, dirList);
         modelMap.put(FileKey.FILES, fileList);
         return "list";
@@ -55,15 +72,14 @@ public class DirectoryController {
 
     @RequestMapping(value = "/directory",method = RequestMethod.POST)
     @ResponseBody
-    public String createDirectory(String directoryname, HttpServletRequest request, HttpSession session) {
-        if(StringUtils.isHasAny(directoryname,".","/","|","\\",",","`","~","*","^","%","#")){
+    public String createDirectory(String sourceDir,String targetDirName, HttpServletRequest request, HttpSession session) {
+        if(StringUtils.isHasAny(targetDirName,".","/","|","\\",",","`","~","*","^","%","#")){
             return "创建目录失败，包含违规名";
         }
-        String uri = request.getRequestURI();
-        String uriP = uri.substring(uri.indexOf("list") + 4, uri.length());
+        String uriP = sourceDir.substring(sourceDir.indexOf("list") + 4, sourceDir.length());
         String username = SessionUtils.getUserNameFromSession(session);
         String uriPath = FileUtils.getPathByUserNameAndUri(username, uriP);
-        boolean b = FileUtils.createDirFromPath(uriPath + "/"+directoryname);
+        boolean b = FileUtils.createDirFromPath(Paths.get(uriPath,targetDirName).toString());
         if(b){
             return "创建目录成功";
         }

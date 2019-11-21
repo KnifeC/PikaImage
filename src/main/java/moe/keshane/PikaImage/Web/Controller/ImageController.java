@@ -6,8 +6,13 @@ import org.springframework.stereotype.Controller;
 public class ImageController {
 //    @RequestMapping("/image/**")
 //    public String image(HttpServletRequest request){
-//        String requestURI = request.getRequestURI();
-//        String path = FileUtils.getPathByUri(requestURI);
+//        String uri = null;
+//        try {
+//            uri = URLDecoder.decode(request.getRequestURI(),"UTF-8");
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+//        String path = FileUtils.getPathByUri(uri);
 //        if(FileUtils.isExist(path)){
 //
 //        }
