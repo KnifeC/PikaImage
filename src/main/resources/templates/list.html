@@ -7,10 +7,9 @@
 {{>layout/header}}
 
 <div class="container py-4">
+    {{>layout/message}}
     <div class="row justify-content-center">
         <div class="col">
-            {{>layout/message}}
-
             {{#now_path}}
             <p>当前目录： {{.}}</p>
             {{/now_path}}

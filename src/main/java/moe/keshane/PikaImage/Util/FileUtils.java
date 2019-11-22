@@ -6,6 +6,7 @@ import moe.keshane.PikaImage.Exception.DirectoryAleadyExistException;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.util.FileSystemUtils;
 
+import javax.validation.constraints.Null;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -86,19 +87,29 @@ public class FileUtils {
     }
 
     public static List<String> listDir(String targetPath){
-        return Arrays.stream(new File(targetPath).listFiles())
-                .filter(File::isDirectory)
-                .map(f->f.getName())
-                .map(f->String.valueOf(f))
-                .collect(Collectors.toList());
+        try{
+            return Arrays.stream(new File(targetPath).listFiles())
+                    .filter(File::isDirectory)
+                    .map(f->f.getName())
+                    .map(f->String.valueOf(f))
+                    .collect(Collectors.toList());
+        }catch (NullPointerException e){
+            return null;
+        }
+
     }
 
     public static List<String> listFile(String targetPath){
-        return Arrays.stream(new File(targetPath).listFiles())
-                .filter(File::isFile)
-                .map(f->f.getName())
-                .map(f->f.toString())
-                .collect(Collectors.toList());
+        try{
+            return Arrays.stream(new File(targetPath).listFiles())
+                    .filter(File::isFile)
+                    .map(f->f.getName())
+                    .map(f->f.toString())
+                    .collect(Collectors.toList());
+        }catch (NullPointerException e){
+            return null;
+        }
+
     }
 
     public static Path getJarPath() {

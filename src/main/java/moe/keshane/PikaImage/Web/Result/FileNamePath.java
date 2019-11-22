@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NameAndPath {
+public class FileNamePath {
     String name;
     String path;
 }

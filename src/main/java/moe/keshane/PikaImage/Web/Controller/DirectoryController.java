@@ -5,8 +5,11 @@ import moe.keshane.PikaImage.Common.FileKey;
 import moe.keshane.PikaImage.Common.KeySet;
 import moe.keshane.PikaImage.Exception.PageNotFoundException;
 import moe.keshane.PikaImage.Util.FileUtils;
+import moe.keshane.PikaImage.Util.MessageUtils;
 import moe.keshane.PikaImage.Util.SessionUtils;
 import moe.keshane.PikaImage.Util.StringUtils;
+import moe.keshane.PikaImage.Web.Result.Message;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -27,10 +31,14 @@ import java.util.List;
 @Controller
 public class DirectoryController {
     @RequestMapping("/list")
-    public String listRoot(HttpServletRequest request, HttpSession session, ModelMap modelMap) {
+    public String listRoot(HttpServletRequest request, HttpSession session, ModelMap modelMap, @RequestParam(value = "message_type", required = false) String message_type, @RequestParam(value = "message", required = false) String message) {
+        if (!StringUtils.isNull(message, message_type)) {
+            log.info("message GET!!!  message:{}  type:{}", message, message_type);
+            MessageUtils.sendMessage(modelMap, new Message(message, message_type));
+        }
         String uri = null;
         try {
-            uri = URLDecoder.decode(request.getRequestURI(),"UTF-8");
+            uri = URLDecoder.decode(request.getRequestURI(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -38,7 +46,7 @@ public class DirectoryController {
         String userRootPath = FileUtils.getUserRootPath(username);
         List<String> dirList = FileUtils.listDir(userRootPath);
         List<String> fileList = FileUtils.listFile(userRootPath);
-        modelMap.put(FileKey.NOWPATH,uri);
+        modelMap.put(FileKey.NOWPATH, uri);
         modelMap.put(KeySet.USERNAME, username);
         modelMap.put(FileKey.DIRECTORIES, dirList);
         modelMap.put(FileKey.FILES, fileList);
@@ -46,63 +54,68 @@ public class DirectoryController {
     }
 
     @RequestMapping("/list/**")
-    public String list(HttpServletRequest request, HttpSession session, ModelMap modelMap, @RequestParam(value = "message")String message) {
+    public String list(HttpServletRequest request, HttpSession session, ModelMap modelMap) {
         String uri = null;
         try {
-            uri = URLDecoder.decode(request.getRequestURI(),"UTF-8");
+            uri = URLDecoder.decode(request.getRequestURI(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         String uriP = uri.substring(uri.indexOf("list") + 4, uri.length());
-//        log.info("访问的路径去除list为: {}",uriP);
         String username = SessionUtils.getUserNameFromSession(session);
         String uriPath = FileUtils.getPathByUserNameAndUri(username, uriP);
-//        log.info("组装好之后的文件路径为: {}",uriPath);
         if (!FileUtils.isExist(uriPath)) {
-//            FileUtils.createDirFromPath(uriPath);
-            modelMap.put(KeySet.USERNAME, username);
-            modelMap.put(KeySet.MESSAGE_TYPE, KeySet.DANGER);
-            modelMap.put(KeySet.MESSAGE, "目录不存在");
+            MessageUtils.sendDangerMessage(modelMap, "目录不存在");
             throw new PageNotFoundException("目录不存在");
         }
         List<String> dirList = FileUtils.listDir(uriPath);
         List<String> fileList = FileUtils.listFile(uriPath);
         modelMap.put(KeySet.USERNAME, username);
-        modelMap.put(FileKey.NOWPATH,uri);
+        modelMap.put(FileKey.NOWPATH, uri);
         modelMap.put(FileKey.DIRECTORIES, dirList);
         modelMap.put(FileKey.FILES, fileList);
         return "list";
     }
 
-    @RequestMapping(value = "/directory",method = RequestMethod.POST)
+    @RequestMapping(value = "/directory", method = RequestMethod.POST)
     public String createDirectory(String sourceDir, String targetDirName, HttpSession session, RedirectAttributes redirectAttributes) {
-        if(StringUtils.isHasAny(targetDirName,".","/","|","\\",",","`","~","*","^","%","#")){
-            return "创建目录失败，包含违规名";
+        if (StringUtils.isHasAny(targetDirName, ".", "/", "|", "\\", ",", "`", "~", "*", "^", "%", "#")) {
+            redirectAttributes.addFlashAttribute("message", new Message("创建失败，包含违规名",KeySet.WARNING));
+            return "redirect:" + sourceDir;
         }
         String uriP = sourceDir.substring(sourceDir.indexOf("list") + 4, sourceDir.length());
         String username = SessionUtils.getUserNameFromSession(session);
         String uriPath = FileUtils.getPathByUserNameAndUri(username, uriP);
-        boolean b = FileUtils.createDirFromPath(Paths.get(uriPath,targetDirName).toString());
-        if(b){
-            return "redirect:"+sourceDir;
+        boolean b = FileUtils.createDirFromPath(Paths.get(uriPath, targetDirName).toString());
+        if (b) {
+            redirectAttributes.addFlashAttribute("message", new Message("创建成功",KeySet.SUCCESS));
+            return "redirect:" + sourceDir;
+
         }
-        return "创建目录失败，该目录已经存在";
+        redirectAttributes.addFlashAttribute("message", new Message("创建失败，目录已存在",KeySet.WARNING));
+        log.info("重定向DIR：{}", sourceDir);
+        return "redirect:"+sourceDir;
     }
 
-    @RequestMapping(value = "/deletedirectory",method = RequestMethod.POST)
-    @ResponseBody
-    public String deleteDirectory(String sourceDir,String targetDirName, HttpSession session, RedirectAttributes redirectAttributes) {
-        if(StringUtils.isHasAny(targetDirName,".","/","|","\\",",","`","~","*","^","%","#")){
-            return "创建目录失败，包含违规名";
+    @RequestMapping(value = "/deletedirectory", method = RequestMethod.POST)
+    public String deleteDirectory(String sourceDir, String targetDirName, HttpSession session, RedirectAttributes redirectAttributes) {
+        if (StringUtils.isHasAny(targetDirName, "/", "|", "\\", ",", "`", "~", "*", "^", "%", "#")) {
+            redirectAttributes.addFlashAttribute("message", new Message("删除失败",KeySet.WARNING));
+            return "redirect:" + sourceDir;
         }
         String uriP = sourceDir.substring(sourceDir.indexOf("list") + 4, sourceDir.length());
         String username = SessionUtils.getUserNameFromSession(session);
         String uriPath = FileUtils.getPathByUserNameAndUri(username, uriP);
-        boolean b = FileUtils.deleteDirectory(Paths.get(uriPath,targetDirName).toString());
-        if(b){
-            return "删除目录成功";
+        log.info("获得删除目录：{}",uriPath);
+        boolean b = FileUtils.deleteDirectory(Paths.get(uriPath, targetDirName).toString());
+        if (b) {
+            log.info("删除成功信息！！！");
+            redirectAttributes.addFlashAttribute("message", new Message("删除成功",KeySet.SUCCESS));
+            log.info("重定向DIR：{}", sourceDir);
+            return "redirect:" +sourceDir;
         }
-        return "删除目录失败";
+        redirectAttributes.addFlashAttribute("message", new Message("删除失败",KeySet.WARNING));
+        return "redirect:" + sourceDir;
     }
 
 }

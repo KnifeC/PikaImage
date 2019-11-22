@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import moe.keshane.PikaImage.Common.KeySet;
 import moe.keshane.PikaImage.Dao.Entity.User;
 import moe.keshane.PikaImage.Service.UserService;
+import moe.keshane.PikaImage.Util.MessageUtils;
 import moe.keshane.PikaImage.Util.StringUtils;
 import moe.keshane.PikaImage.Util.UserCookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @Controller
 @Slf4j
@@ -24,13 +26,11 @@ public class UserController {
     public String register(String username, String password, String rePassword, ModelMap modelMap) {
         log.info("Register username : {} password : {} repassword : {}",username,password,rePassword);
         if (StringUtils.isNull(username, password, rePassword)) {
-            modelMap.put("message", "输入数据不能为空");
-            modelMap.put("message_type", KeySet.DANGER);
+            MessageUtils.sendDangerMessage(modelMap,"输入数据不能为空");
             return "register";
         }
         if (!password.equals(rePassword)) {
-            modelMap.put(KeySet.MESSAGE, "输入数据不能为空");
-            modelMap.put(KeySet.MESSAGE_TYPE, KeySet.DANGER);
+            MessageUtils.sendDangerMessage(modelMap,"两次输入的密码不一致");
             return "register";
         }
         User register = userService.register(username, password, rePassword);
@@ -40,8 +40,7 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(String username, String password, HttpServletResponse response, ModelMap modelMap) {
         if (StringUtils.isNull(username, password)) {
-            modelMap.put(KeySet.MESSAGE, "输入数据不能为空");
-            modelMap.put(KeySet.MESSAGE_TYPE, KeySet.DANGER);
+            MessageUtils.sendDangerMessage(modelMap,"输入数据不能为空");
             return "login";
         }
         User user = userService.login(username, password);
@@ -59,5 +58,13 @@ public class UserController {
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String registerpage() {
         return "register";
+    }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logout(ModelMap modelMap, HttpServletResponse response, HttpSession session) {
+        UserCookieUtils.deleteUserIdcookie(response);
+        session.invalidate();
+        MessageUtils.sendSuccessMessage(modelMap,"登出成功");
+        return "login";
     }
 }
