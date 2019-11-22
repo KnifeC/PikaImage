@@ -8,21 +8,73 @@
 
 <div class="container py-4">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col">
             {{>layout/message}}
 
             {{#now_path}}
-            {{.}}
+            <p>当前目录： {{.}}</p>
             {{/now_path}}
-            <p></p>
+
             {{#directories}}
-            <li><a href="{{now_path}}/{{.}}" >{{.}}</a></li>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <a class="btn btn-outline-primary" style="float: left" href="{{now_path}}/{{.}}">{{.}}</a>
+                    <div style="float: right">
+                        <form action="/deletedirectory" method="post">
+                            <input type="text" value="{{now_path}}" readonly hidden name="sourceDir">
+                            <input type="text" value="{{.}}" readonly hidden name="targetDirName">
+                            <button type="submit" class="btn btn-outline-danger">删除</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
             {{/directories}}
-            {{#files}}
-            <li>{{.}}</li>
-            {{/files}}
         </div>
     </div>
+    {{#files}}
+    <div class="card mb-3">
+        <div class="row no-gutters">
+            <div class="col-md-4">
+                <img src="..." class="card-img" alt="...">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="card-text" style="float: left">{{.}}</label>
+                        <div style="float: right">
+                            <form action="/deletedirectory" method="post">
+                                <input type="text" value="{{now_path}}" readonly hidden name="sourceDir">
+                                <input type="text" value="{{.}}" readonly hidden name="targetDirName">
+                                <button type="submit" class="btn btn-outline-danger">删除</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="input-group my-2">
+                        <div class="col-md-3">
+                            <span class="input-group-text" id="markdown-{{.}}">markdown</span>
+                        </div>
+                        <input type="text" class="form-control" readonly
+                               value="{{.}}">
+                    </div>
+                    <div class="input-group my-2">
+                        <div class="col-md-3">
+                            <span class="input-group-text" id="html-{{.}}">html</span>
+                        </div>
+                        <input type="text" class="form-control" readonly value="{{.}}">
+                    </div>
+                    <div class="input-group my-2">
+                        <div class="col-md-3">
+                            <span class="input-group-text" id="basic-{{.}}">basic</span>
+                        </div>
+                        <input type="text" class="form-control" readonly value="{{.}}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/files}}
+
+
 </div>
 </body>
 </html>

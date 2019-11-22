@@ -3,6 +3,7 @@ package moe.keshane.PikaImage.Web.Controller;
 import lombok.extern.slf4j.Slf4j;
 import moe.keshane.PikaImage.Common.FileKey;
 import moe.keshane.PikaImage.Common.KeySet;
+import moe.keshane.PikaImage.Exception.PageNotFoundException;
 import moe.keshane.PikaImage.Util.FileUtils;
 import moe.keshane.PikaImage.Util.SessionUtils;
 import moe.keshane.PikaImage.Util.StringUtils;
@@ -10,9 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -42,7 +46,7 @@ public class DirectoryController {
     }
 
     @RequestMapping("/list/**")
-    public String list(HttpServletRequest request, HttpSession session, ModelMap modelMap) {
+    public String list(HttpServletRequest request, HttpSession session, ModelMap modelMap, @RequestParam(value = "message")String message) {
         String uri = null;
         try {
             uri = URLDecoder.decode(request.getRequestURI(),"UTF-8");
@@ -50,16 +54,16 @@ public class DirectoryController {
             e.printStackTrace();
         }
         String uriP = uri.substring(uri.indexOf("list") + 4, uri.length());
-        log.info("访问的路径去除list为: {}",uriP);
+//        log.info("访问的路径去除list为: {}",uriP);
         String username = SessionUtils.getUserNameFromSession(session);
         String uriPath = FileUtils.getPathByUserNameAndUri(username, uriP);
-        log.info("组装好之后的文件路径为: {}",uriPath);
+//        log.info("组装好之后的文件路径为: {}",uriPath);
         if (!FileUtils.isExist(uriPath)) {
 //            FileUtils.createDirFromPath(uriPath);
             modelMap.put(KeySet.USERNAME, username);
             modelMap.put(KeySet.MESSAGE_TYPE, KeySet.DANGER);
             modelMap.put(KeySet.MESSAGE, "目录不存在");
-            return "list";
+            throw new PageNotFoundException("目录不存在");
         }
         List<String> dirList = FileUtils.listDir(uriPath);
         List<String> fileList = FileUtils.listFile(uriPath);
@@ -71,8 +75,7 @@ public class DirectoryController {
     }
 
     @RequestMapping(value = "/directory",method = RequestMethod.POST)
-    @ResponseBody
-    public String createDirectory(String sourceDir,String targetDirName, HttpServletRequest request, HttpSession session) {
+    public String createDirectory(String sourceDir, String targetDirName, HttpSession session, RedirectAttributes redirectAttributes) {
         if(StringUtils.isHasAny(targetDirName,".","/","|","\\",",","`","~","*","^","%","#")){
             return "创建目录失败，包含违规名";
         }
@@ -81,9 +84,25 @@ public class DirectoryController {
         String uriPath = FileUtils.getPathByUserNameAndUri(username, uriP);
         boolean b = FileUtils.createDirFromPath(Paths.get(uriPath,targetDirName).toString());
         if(b){
-            return "创建目录成功";
+            return "redirect:"+sourceDir;
         }
         return "创建目录失败，该目录已经存在";
+    }
+
+    @RequestMapping(value = "/deletedirectory",method = RequestMethod.POST)
+    @ResponseBody
+    public String deleteDirectory(String sourceDir,String targetDirName, HttpSession session, RedirectAttributes redirectAttributes) {
+        if(StringUtils.isHasAny(targetDirName,".","/","|","\\",",","`","~","*","^","%","#")){
+            return "创建目录失败，包含违规名";
+        }
+        String uriP = sourceDir.substring(sourceDir.indexOf("list") + 4, sourceDir.length());
+        String username = SessionUtils.getUserNameFromSession(session);
+        String uriPath = FileUtils.getPathByUserNameAndUri(username, uriP);
+        boolean b = FileUtils.deleteDirectory(Paths.get(uriPath,targetDirName).toString());
+        if(b){
+            return "删除目录成功";
+        }
+        return "删除目录失败";
     }
 
 }
