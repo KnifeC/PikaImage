@@ -16,7 +16,7 @@
                 <div class="card-body">
                     <label class="card-title" style="float: left">当前路径： {{.}}</label>
                     <div style="float: right">
-                        <form class="form-inline" action="/directory" method="post">
+                        <form class="form-inline" action="/directory" method="post" onsubmit="check()">
                             <div class="form-group mx-sm-3 mb-2">
                                 <label for="targetDirName" class="sr-only">文件夹名</label>
                                 <input type="text" class="form-control" name="sourceDir" value="{{now_path}}" hidden>
@@ -59,7 +59,7 @@
                 <div class="card-body">
                     <a class="btn btn-outline-primary" style="float: left" href="{{now_path}}/{{.}}">{{.}}</a>
                     <div style="float: right">
-                        <form action="/deletedirectory" method="post">
+                        <form action="/deletedirectory" method="post" onsubmit="check()">
                             <input type="text" value="{{now_path}}" readonly hidden name="sourceDir">
                             <input type="text" value="{{.}}" readonly hidden name="targetDirName">
                             <button type="submit" class="btn btn-outline-danger">删除</button>
@@ -71,17 +71,17 @@
         </div>
     </div>
     {{#files}}
-    <div class="card mb-3">
+    <div class="card my-2">
         <div class="row no-gutters">
-            <div class="col-md-4">
-                <img src="{{url}}" class="card-img" alt="...">
+            <div class="col-md-4 py-4 px-4">
+                <img src="{{url}}" class="card-img" alt="{{name}}">
             </div>
             <div class="col-md-8">
                 <div class="card-body">
                     <div class="mb-3">
                         <label class="card-text" style="float: left">{{name}}</label>
                         <div style="float: right">
-                            <form action="/deletedirectory" method="post">
+                            <form action="/deletedirectory" method="post" onsubmit="check()">
                                 <input type="text" value="{{now_path}}" readonly hidden name="sourceDir">
                                 <input type="text" value="{{name}}" readonly hidden name="targetDirName">
                                 <button type="submit" class="btn btn-outline-danger mb-3">删除</button>
@@ -125,6 +125,11 @@
     //     dictDefaultMessage:"现在开始上传图片",
     //     paramName:"imageFile"
     // });
+
+    function check() {
+        var r=confirm("是否确定？");
+        return r;
+    }
 </script>
 </body>
 </html>

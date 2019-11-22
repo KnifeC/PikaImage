@@ -29,20 +29,19 @@ public class ImageController {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        log.info("URI:{}", uri);
+//        log.info("URI:{}", uri);
         String imagePath = FileUtils.getPathByUri(uri);
-        log.info("FilePath:{}", imagePath);
+//        log.info("FilePath:{}", imagePath);
         if (FileUtils.isExist(imagePath)) {
-            log.info("文件存在1");
+//            log.info("文件存在1");
             FileSystemResource resource = new FileSystemResource(imagePath);
-            log.info("文件存在2");
+//            log.info("文件存在2");
             String contentType = null;
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
             if (contentType == null) {
                 contentType = "application/octet-stream";
             }
-            log.info("ContentType:{}", contentType);
-
+//            log.info("ContentType:{}", contentType);
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(contentType))
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")

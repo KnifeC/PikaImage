@@ -50,7 +50,7 @@ public class DirectoryController {
         List<FileNamePath> fileNamePaths = new ArrayList<>();
         for(String file : fileList){
             String imageUrl = "/image/"+username+"/"+file;
-            log.info("filename : {} , URL : {}",file,imageUrl);
+//            log.info("filename : {} , URL : {}",file,imageUrl);
             fileNamePaths.add(new FileNamePath(file,imageUrl));
         }
         modelMap.put(KeySet.USERNAME, username);
@@ -80,7 +80,7 @@ public class DirectoryController {
         List<FileNamePath> fileNamePaths = new ArrayList<>();
         for(String file : fileList){
             String imageUrl = "/image/"+username+"/"+uriP+"/"+file;
-            log.info("filename : {} , URL : {}",file,imageUrl);
+//            log.info("filename : {} , URL : {}",file,imageUrl);
             fileNamePaths.add(new FileNamePath(file,imageUrl));
         }
         modelMap.put(KeySet.USERNAME, username);
