@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/html">
 {{>layout/head}}
 <title>文件列表</title>
+<script src="/js/dropzone.js"></script>
 </head>
 <body>
 {{>layout/header}}
@@ -19,10 +20,35 @@
                             <div class="form-group mx-sm-3 mb-2">
                                 <label for="targetDirName" class="sr-only">文件夹名</label>
                                 <input type="text" class="form-control" name="sourceDir" value="{{now_path}}" hidden>
-                                <input type="text" class="form-control" id="targetDirName" name="targetDirName" placeholder="文件夹名" required>
+                                <input type="text" class="form-control" id="targetDirName" name="targetDirName"
+                                       placeholder="文件夹名" required>
                             </div>
                             <button type="submit" class="btn btn-primary mb-2">创建文件夹</button>
                         </form>
+                    </div>
+                </div>
+                <div id="uploadbody">
+                    <div class="card-footer justify-content-center" id="headingOne">
+                        <h2 class="mb-0">
+                            <button class="btn btn-outline-dark collapsed" type="button" data-toggle="collapse"
+                                    data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                上传图片
+                            </button>
+                        </h2>
+                    </div>
+
+                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#uploadbody">
+                        <div class="card-body justify-content-center">
+<!--                            <div id="dropzone"></div>-->
+                            <form action="/upload" method="post" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <input type="text" hidden readonly value="{{now_path}}" name="sourceDir">
+                                    <label for="exampleFormControlFile1">上传图片文件</label>
+                                    <input type="file" class="form-control-file" id="exampleFormControlFile1" name = "imageFile" required>
+                                    <button class="btn btn-primary my-2" type="submit">上传</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -48,16 +74,16 @@
     <div class="card mb-3">
         <div class="row no-gutters">
             <div class="col-md-4">
-                <img src="..." class="card-img" alt="...">
+                <img src="{{files.imagePath}}" class="card-img" alt="...">
             </div>
             <div class="col-md-8">
                 <div class="card-body">
                     <div class="mb-3">
-                        <label class="card-text" style="float: left">{{.}}</label>
+                        <label class="card-text" style="float: left">{{files.name}}</label>
                         <div style="float: right">
                             <form action="/deletedirectory" method="post">
                                 <input type="text" value="{{now_path}}" readonly hidden name="sourceDir">
-                                <input type="text" value="{{.}}" readonly hidden name="targetDirName">
+                                <input type="text" value="{{files.name}}" readonly hidden name="targetDirName">
                                 <button type="submit" class="btn btn-outline-danger mb-3">删除</button>
                             </form>
                         </div>
@@ -67,19 +93,19 @@
                             <span class="input-group-text" id="markdown-{{.}}">markdown</span>
                         </div>
                         <input type="text" class="form-control" readonly
-                               value="{{.}}">
+                               value="![{{files.name}}]({{files.imagePath}})">
                     </div>
                     <div class="input-group my-2">
                         <div class="col-md-3">
                             <span class="input-group-text" id="html-{{.}}">html</span>
                         </div>
-                        <input type="text" class="form-control" readonly value="{{.}}">
+                        <input type="text" class="form-control" readonly value="<img src='{{files.imagePath}}'>">
                     </div>
                     <div class="input-group my-2">
                         <div class="col-md-3">
                             <span class="input-group-text" id="basic-{{.}}">basic</span>
                         </div>
-                        <input type="text" class="form-control" readonly value="{{.}}">
+                        <input type="text" class="form-control" readonly value="{{files.imagePath}}">
                     </div>
                 </div>
             </div>
@@ -89,5 +115,16 @@
 
 
 </div>
+<script>
+    // var dropz = new Dropzone("#dropzone", {
+    //     url: "/upload",
+    //     maxFiles: 10,
+    //     maxFilesize: 5,
+    //     acceptedFiles: "image/*",
+    //     uploadMultiple:true,
+    //     dictDefaultMessage:"现在开始上传图片",
+    //     paramName:"imageFile"
+    // });
+</script>
 </body>
 </html>

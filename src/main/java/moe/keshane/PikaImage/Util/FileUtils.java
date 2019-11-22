@@ -5,6 +5,7 @@ import moe.keshane.PikaImage.Common.FileKey;
 import moe.keshane.PikaImage.Exception.DirectoryAleadyExistException;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.util.FileSystemUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Null;
 import java.io.File;
@@ -20,7 +21,25 @@ import java.util.stream.Collectors;
 @Slf4j
 public class FileUtils {
 
-    public static boolean movaDirectory(String source,String target){
+    public static boolean saveAllFile(String source,MultipartFile[] imageFile){
+        for (MultipartFile m : imageFile){
+            Path filepath = Paths.get(source, m.getOriginalFilename());
+            if(isExist(filepath.toString())){
+                String[] tempPath = filepath.toString().split(".");
+                String newPath = String.join("",tempPath[tempPath.length-2]+UUIDUtils.getUUID());
+                filepath = Paths.get(newPath);
+            }
+            try {
+                m.transferTo(filepath);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean moveDirectory(String source,String target){
         boolean b = copyDirectory(source,target);
         if(b){
             return deleteDirectory(source);

@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FileNamePath {
     String name;
-    String path;
+    String imagePath;
 }
