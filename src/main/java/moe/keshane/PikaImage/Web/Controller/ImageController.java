@@ -32,24 +32,22 @@ public class ImageController {
         log.info("URI:{}", uri);
         String imagePath = FileUtils.getPathByUri(uri);
         log.info("FilePath:{}", imagePath);
-//        if (FileUtils.isExist(imagePath)) {
-        log.info("文件存在1");
-        FileSystemResource resource = new FileSystemResource(imagePath);
-        log.info("文件存在2");
-        String contentType = null;
-        contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-        if (contentType == null) {
-            contentType = "application/octet-stream";
-        }
-        log.info("ContentType:{}", contentType);
+        if (FileUtils.isExist(imagePath)) {
+            log.info("文件存在1");
+            FileSystemResource resource = new FileSystemResource(imagePath);
+            log.info("文件存在2");
+            String contentType = null;
+            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+            if (contentType == null) {
+                contentType = "application/octet-stream";
+            }
+            log.info("ContentType:{}", contentType);
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                .body(resource);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                    .body(resource);
+        }
+        throw new PageNotFoundException("Resource does not exist");
     }
-//        throw new PageNotFoundException("Resource does not exist");
-//        log.info("文件不存在！！！！！！");
-//        return null;
-//    }
 }
