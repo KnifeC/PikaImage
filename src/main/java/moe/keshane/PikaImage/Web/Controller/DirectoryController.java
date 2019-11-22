@@ -79,18 +79,23 @@ public class DirectoryController {
 
     @RequestMapping(value = "/directory", method = RequestMethod.POST)
     public String createDirectory(String sourceDir, String targetDirName, HttpSession session, RedirectAttributes redirectAttributes) {
+        if (StringUtils.isNull(sourceDir, targetDirName)) {
+            redirectAttributes.addFlashAttribute("message", new Message("输入数据不能为空",KeySet.WARNING));
+            return "redirect:list";
+        }
         if (StringUtils.isHasAny(targetDirName, ".", "/", "|", "\\", ",", "`", "~", "*", "^", "%", "#")) {
             redirectAttributes.addFlashAttribute("message", new Message("创建失败，包含违规名",KeySet.WARNING));
             return "redirect:" + sourceDir;
         }
+        log.info("数据校验完成");
         String uriP = sourceDir.substring(sourceDir.indexOf("list") + 4, sourceDir.length());
         String username = SessionUtils.getUserNameFromSession(session);
         String uriPath = FileUtils.getPathByUserNameAndUri(username, uriP);
         boolean b = FileUtils.createDirFromPath(Paths.get(uriPath, targetDirName).toString());
         if (b) {
+            log.info("创建成功: {}",uriPath);
             redirectAttributes.addFlashAttribute("message", new Message("创建成功",KeySet.SUCCESS));
             return "redirect:" + sourceDir;
-
         }
         redirectAttributes.addFlashAttribute("message", new Message("创建失败，目录已存在",KeySet.WARNING));
         log.info("重定向DIR：{}", sourceDir);

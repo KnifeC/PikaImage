@@ -11,7 +11,21 @@
     <div class="row justify-content-center">
         <div class="col">
             {{#now_path}}
-            <p>当前目录： {{.}}</p>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <label class="card-title" style="float: left">当前路径： {{.}}</label>
+                    <div style="float: right">
+                        <form class="form-inline" action="/directory" method="post">
+                            <div class="form-group mx-sm-3 mb-2">
+                                <label for="targetDirName" class="sr-only">文件夹名</label>
+                                <input type="text" class="form-control" name="sourceDir" value="{{now_path}}" hidden>
+                                <input type="text" class="form-control" id="targetDirName" name="targetDirName" placeholder="文件夹名" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary mb-2">创建文件夹</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
             {{/now_path}}
 
             {{#directories}}
@@ -44,7 +58,7 @@
                             <form action="/deletedirectory" method="post">
                                 <input type="text" value="{{now_path}}" readonly hidden name="sourceDir">
                                 <input type="text" value="{{.}}" readonly hidden name="targetDirName">
-                                <button type="submit" class="btn btn-outline-danger">删除</button>
+                                <button type="submit" class="btn btn-outline-danger mb-3">删除</button>
                             </form>
                         </div>
                     </div>

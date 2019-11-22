@@ -52,6 +52,7 @@ public class FileUtils {
     }
 
     public static boolean createDirFromPath(String dirPath){
+        log.info("目录创建路径为:{}",dirPath);
         if(!Files.exists(Paths.get(dirPath),new LinkOption[]{ LinkOption.NOFOLLOW_LINKS})){
             try {
                 Path path = Files.createDirectories(Paths.get(dirPath));
