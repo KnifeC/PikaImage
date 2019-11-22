@@ -74,38 +74,38 @@
     <div class="card mb-3">
         <div class="row no-gutters">
             <div class="col-md-4">
-                <img src="{{files.imagePath}}" class="card-img" alt="...">
+                <img src="{{url}}" class="card-img" alt="...">
             </div>
             <div class="col-md-8">
                 <div class="card-body">
                     <div class="mb-3">
-                        <label class="card-text" style="float: left">{{files.name}}</label>
+                        <label class="card-text" style="float: left">{{name}}</label>
                         <div style="float: right">
                             <form action="/deletedirectory" method="post">
                                 <input type="text" value="{{now_path}}" readonly hidden name="sourceDir">
-                                <input type="text" value="{{files.name}}" readonly hidden name="targetDirName">
+                                <input type="text" value="{{name}}" readonly hidden name="targetDirName">
                                 <button type="submit" class="btn btn-outline-danger mb-3">删除</button>
                             </form>
                         </div>
                     </div>
                     <div class="input-group my-2">
                         <div class="col-md-3">
-                            <span class="input-group-text" id="markdown-{{.}}">markdown</span>
+                            <span class="input-group-text" id="markdown-{{name}}">markdown</span>
                         </div>
                         <input type="text" class="form-control" readonly
-                               value="![{{files.name}}]({{files.imagePath}})">
+                               value="![{{name}}]({{url}})">
                     </div>
                     <div class="input-group my-2">
                         <div class="col-md-3">
-                            <span class="input-group-text" id="html-{{.}}">html</span>
+                            <span class="input-group-text" id="html-{{name}}">html</span>
                         </div>
-                        <input type="text" class="form-control" readonly value="<img src='{{files.imagePath}}'>">
+                        <input type="text" class="form-control" readonly value="<img src='{{url}}'>">
                     </div>
                     <div class="input-group my-2">
                         <div class="col-md-3">
-                            <span class="input-group-text" id="basic-{{.}}">basic</span>
+                            <span class="input-group-text" id="basic-{{name}}">basic</span>
                         </div>
-                        <input type="text" class="form-control" readonly value="{{files.imagePath}}">
+                        <input type="text" class="form-control" readonly value="{{url}}">
                     </div>
                 </div>
             </div>

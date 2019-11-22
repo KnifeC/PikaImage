@@ -64,15 +64,15 @@ public class FileUtils {
     }
 
     public static boolean isExist(String dirPath){
-        if(!Files.exists(Paths.get(dirPath),new LinkOption[]{ LinkOption.NOFOLLOW_LINKS})){
-            return false;
+        if(Files.exists(Paths.get(dirPath),new LinkOption[]{ LinkOption.NOFOLLOW_LINKS})){
+            return true;
         }
-        return true;
+        return false;
     }
 
     public static boolean createDirFromPath(String dirPath){
         log.info("目录创建路径为:{}",dirPath);
-        if(!Files.exists(Paths.get(dirPath),new LinkOption[]{ LinkOption.NOFOLLOW_LINKS})){
+        if(isExist(dirPath)){
             try {
                 Path path = Files.createDirectories(Paths.get(dirPath));
                 return true;

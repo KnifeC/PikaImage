@@ -36,11 +36,7 @@ import java.util.List;
 @Controller
 public class DirectoryController {
     @RequestMapping("/list")
-    public String listRoot(HttpServletRequest request, HttpSession session, ModelMap modelMap, @RequestParam(value = "message_type", required = false) String message_type, @RequestParam(value = "message", required = false) String message) {
-        if (!StringUtils.isNull(message, message_type)) {
-            log.info("message GET!!!  message:{}  type:{}", message, message_type);
-            MessageUtils.sendMessage(modelMap, new Message(message, message_type));
-        }
+    public String listRoot(HttpServletRequest request, HttpSession session, ModelMap modelMap) {
         String uri = null;
         try {
             uri = URLDecoder.decode(request.getRequestURI(), "UTF-8");
@@ -51,10 +47,16 @@ public class DirectoryController {
         String userRootPath = FileUtils.getUserRootPath(username);
         List<String> dirList = FileUtils.listDir(userRootPath);
         List<String> fileList = FileUtils.listFile(userRootPath);
-        modelMap.put(FileKey.NOWPATH, uri);
+        List<FileNamePath> fileNamePaths = new ArrayList<>();
+        for(String file : fileList){
+            String imageUrl = "/image/"+username+"/"+file;
+            log.info("filename : {} , URL : {}",file,imageUrl);
+            fileNamePaths.add(new FileNamePath(file,imageUrl));
+        }
         modelMap.put(KeySet.USERNAME, username);
+        modelMap.put(FileKey.NOWPATH, uri);
         modelMap.put(FileKey.DIRECTORIES, dirList);
-        modelMap.put(FileKey.FILES, fileList);
+        modelMap.put(FileKey.FILES, fileNamePaths);
         return "list";
     }
 
@@ -77,7 +79,8 @@ public class DirectoryController {
         List<String> fileList = FileUtils.listFile(uriPath);
         List<FileNamePath> fileNamePaths = new ArrayList<>();
         for(String file : fileList){
-            String imageUrl = "/image/"+uriPath+"/"+file;
+            String imageUrl = "/image/"+username+"/"+uriP+"/"+file;
+            log.info("filename : {} , URL : {}",file,imageUrl);
             fileNamePaths.add(new FileNamePath(file,imageUrl));
         }
         modelMap.put(KeySet.USERNAME, username);
