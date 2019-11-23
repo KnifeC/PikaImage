@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+{{>layout/head}}
+<title>PikaImage</title>
+</head>
+<body>
+{{>layout/header}}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="card mb-3">
+            <p class="card-title" style="float: left">当前BaseUrl {{baseurl}}</p>
+            <div class="card-body">
+                <form class="form-inline" action="/baseurl" method="post" onsubmit="return check()">
+                    <label for="baseurl" class="sr-only">BaseUrl</label>
+                    <input type="text" class="form-control" id="baseurl" name="baseUrl"
+                           placeholder="BaseUrl" required>
+                    <button type="submit" class="btn btn-primary mb-2">设置</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function check() {
+        var r = confirm("是否确定？");
+        if (r == true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

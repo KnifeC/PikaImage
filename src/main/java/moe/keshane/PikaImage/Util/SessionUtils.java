@@ -1,6 +1,6 @@
 package moe.keshane.PikaImage.Util;
 
-import moe.keshane.PikaImage.Common.KeySet;
+import moe.keshane.PikaImage.Common.UserKey;
 
 import javax.servlet.http.HttpSession;
 
@@ -21,14 +21,14 @@ public class SessionUtils {
     }
 
     public static String getUserIdFromSession(HttpSession session){
-        return getSessionStringData(session, KeySet.USERID);
+        return getSessionStringData(session, UserKey.USERID);
     }
 
     public static String getUserNameFromSession(HttpSession session){
-        return getSessionStringData(session,KeySet.USERNAME);
+        return getSessionStringData(session,UserKey.USERNAME);
     }
 
     public static String getUserTypeFromSession(HttpSession session){
-        return getSessionStringData(session,KeySet.USERTYPE);
+        return getSessionStringData(session,UserKey.USERTYPE);
     }
 }

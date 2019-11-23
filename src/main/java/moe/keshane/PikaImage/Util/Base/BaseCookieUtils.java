@@ -1,10 +1,5 @@
 package moe.keshane.PikaImage.Util.Base;
 
-import moe.keshane.PikaImage.Common.KeySet;
-import moe.keshane.PikaImage.Dao.Entity.User;
-import moe.keshane.PikaImage.Service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

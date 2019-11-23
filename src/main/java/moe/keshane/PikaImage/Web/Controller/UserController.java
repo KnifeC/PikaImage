@@ -1,7 +1,8 @@
 package moe.keshane.PikaImage.Web.Controller;
 
 import lombok.extern.slf4j.Slf4j;
-import moe.keshane.PikaImage.Common.KeySet;
+import moe.keshane.PikaImage.Common.MessageKey;
+import moe.keshane.PikaImage.Common.UserKey;
 import moe.keshane.PikaImage.Dao.Entity.User;
 import moe.keshane.PikaImage.Service.UserService;
 import moe.keshane.PikaImage.Util.MessageUtils;
@@ -36,7 +37,7 @@ public class UserController {
             return "register";
         }
         User register = userService.register(username, password, rePassword);
-        redirectAttributes.addFlashAttribute(KeySet.MESSAGE,new Message("注册成功",KeySet.SUCCESS));
+        redirectAttributes.addFlashAttribute(MessageKey.MESSAGE,new Message("注册成功",MessageKey.SUCCESS));
         return "redirect:/login";
     }
 
@@ -48,8 +49,8 @@ public class UserController {
         }
         User user = userService.login(username, password);
         UserCookieUtils.setUserIdCookie(response, user.getUserId());
-        modelMap.put(KeySet.USERNAME, user.getUsername());
-        redirectAttributes.addFlashAttribute(KeySet.MESSAGE,new Message("登陆成功",KeySet.SUCCESS));
+        modelMap.put(UserKey.USERNAME, user.getUsername());
+        redirectAttributes.addFlashAttribute(MessageKey.MESSAGE,new Message("登陆成功",MessageKey.SUCCESS));
         return "redirect:/";
 
     }
@@ -71,4 +72,7 @@ public class UserController {
         MessageUtils.sendSuccessMessage(modelMap,"登出成功");
         return "login";
     }
+
+
+
 }

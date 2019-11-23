@@ -17,7 +17,7 @@ public class User {
     @Id
     @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
     @GeneratedValue(generator = "jpa-uuid")
-    @Column(length = 32)
+    @Column(length = 64)
     private String userId;
 //    @Column(nullable = false,length=64,unique = true)
 //    private String email;

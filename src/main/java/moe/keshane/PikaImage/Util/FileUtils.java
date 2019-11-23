@@ -25,9 +25,7 @@ public class FileUtils {
         for (MultipartFile m : imageFile){
             Path filepath = Paths.get(source, m.getOriginalFilename());
             if(isExist(filepath.toString())){
-                String[] tempPath = filepath.toString().split(".");
-                String newPath = String.join("",tempPath[tempPath.length-2]+UUIDUtils.getUUID());
-                filepath = Paths.get(newPath);
+                filepath = Paths.get(source, UUIDUtils.getUUID()+m.getOriginalFilename());
             }
             try {
                 m.transferTo(filepath);
