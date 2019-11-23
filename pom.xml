@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>moe.keshane</groupId>
 	<artifactId>PikaImage</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.9.1</version>
 	<name>PikaImage</name>
 	<description>A lightweight image storage application</description>
 
